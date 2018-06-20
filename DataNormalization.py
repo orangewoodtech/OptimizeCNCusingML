@@ -2,19 +2,6 @@
 import pandas
 from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
-from sklearn import datasets, linear_model
-from sklearn.model_selection import cross_val_score
-from sklearn import model_selection
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
-import matplotlib.pyplot as plt
 import csv, math
 import numpy as np
 from statistics import *
@@ -34,23 +21,20 @@ DistList1=list(map(float, Dist1))
 xList1=list(map(float, x1))
 zList1=list(map(float, z1))
 
-
-
+# Z-Score Constant
 ZscoreCons=1
 
-#print(ClassList1)
-
+# Transforming Vibrations in x, z to VibNorm
 VibNorm=[]
 count=0
 for i,k in zip(xList1,zList1):
-    #print('{} {} {}'.format(i,j,k))
     val=i*i+k*k
     sqrtval=val**(1.0/2)
     if(sqrtval==0):
         count=count+1
     VibNorm.append(sqrtval)
 
-# Normalized Vibration List
+# Thresholding
 Vib=[]
 meanVib=mean(VibNorm)
 stdevVib=stdev(VibNorm)
@@ -62,15 +46,16 @@ for i in VibNorm:
     else:
         ZScoreval=ZScoreval*3
     Vib.append(ZScoreval)
-#print(Vib)
+
+# FInal Normalized Data Formation
 FinalData=[]
 
 for i in range(0, len(ClassList1)):
     FinalData.append(ClassList1[i])
     FinalData.append(DistList1[i])
     FinalData.append(Vib[i])
-print(FinalData)
 
+# Creating Chunks of List
 n=3
 def chunks(FinalData, n):
     # For item i in a range that is a length of l,
@@ -80,8 +65,10 @@ def chunks(FinalData, n):
 
 SuperCleanData=[]
 SuperCleanData=list(chunks(FinalData, n))
-#print(list(chunks(row, n)))
+
+# Writing into file
 myFile = open('TestML2_1500.csv', 'w')
 with myFile:
     writer = csv.writer(myFile, delimiter=",")
     writer.writerows(SuperCleanData)
+    
